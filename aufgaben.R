@@ -1,5 +1,5 @@
 
-#### Aufgaben ####
+#### Tasks ####
 
 library(mosaic)
 
@@ -76,7 +76,7 @@ getwd()
 # "C:/Users/aster/R Projects/Advanced Business Analytics"
 
 #25
-# Stichprobe ziehen
+# get a sample
 
 #26 
 sample(c(1:100), 10)
@@ -112,12 +112,25 @@ air <- data.frame(airquality %>%
     mutate(Solar.R = airquality$Solar.R))
 
 #35
+z <- data.frame(x = c(1,2,3), y = c(4,NA,5))
+na.omit(z)
 
+#36
+# na.omit handles missing values by deleting the respective row
 
+#37
+airquality %>% 
+  filter(airquality$Wind > 10)
 
+#38
+text <- c('Hallo,', 'wie geht es dir?', 'Mir geht es gut.')
 
+#39
+text <- data.frame(Zeile = row_number(text), text = text)
 
-
+#40
+text %>%
+  unnest_tokens(text, text, token = "words")
 
 
 
