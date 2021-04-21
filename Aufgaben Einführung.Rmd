@@ -204,8 +204,6 @@ profiles %>%
   unnest_tokens(profiles, essay0, token = "words")
 #e
 library(tidyverse)
-?str_detect
-?t
 # str_detect(as.vector(t(profiles)), regex("a-zA-Z"), negate = TRUE)
 tidy_essay <- profiles %>%
   select(sex, essay0) %>%
