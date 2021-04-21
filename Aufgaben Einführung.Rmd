@@ -1,0 +1,257 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+## Aufgaben
+
+```{r}
+library(mosaic)
+```
+```{r}
+# 1
+sum(3 + sin(3))
+```
+```{r}
+#2 
+round(3.4)
+```
+```{r}
+#3 
+sqrt(100)
+```
+```{r}
+#4
+y <- c(1,4,-5)
+```
+```{r}
+#5
+x <- seq(1, 100)
+```
+```{r}
+#6
+x <- c(rep(1, times = 100))
+```
+```{r}
+#7
+y <- c(rep(2, times = 10), rep(4, times = 10))
+```
+```{r}
+#8
+length(y)
+```
+```{r}
+#9 
+unique(x)
+```
+```{r}
+#10
+sort(c(5,3,8,1,2), decreasing = TRUE)
+```
+```{r}
+#11
+sum(c(4,3,2), c(2,5,6))
+```
+```{r}
+#12
+mean(c(1,2,3))
+```
+```{r}
+#13
+summary(1:100)
+```
+```{r}
+#14
+xyplot(rnorm(100, 0.1) ~ c(1:100))
+```
+```{r}
+#15
+cor(c(1,2,3,4), c(1.5,2,3,5))
+```
+```{r}
+#16
+c(1:100)[5]
+```
+```{r}
+#17
+sd(c(1:100)) 
+```
+```{r}
+#18
+c(50,100,150,210) > 200
+```
+```{r}
+#19
+s <- c('BWL', 'VWL', 'WI')
+```
+```{r}
+#20
+str(s)
+```
+```{r}
+#21
+matrix(c(1:12), nrow = 4, ncol = 3)
+```
+```{r}
+#22
+Gehalt <- data.frame(Alter = c(23,35,25), Einkommen = c(1000,2000,1500), Geschlecht = c('m','w','w'))
+```
+```{r}
+#23
+dim(Gehalt)
+```
+```{r}
+#24
+getwd()
+# "C:/Users/aster/R Projects/Advanced Business Analytics"
+```
+```{r}
+#25
+# get a sample
+```
+```{r}
+#26 
+sample(c(1:100), 10)
+sample(c(1:100), 10, replace = TRUE)
+```
+```{r}
+#27
+boxplot(rnorm(100, mean = 50, sd = 10))
+```
+```{r}
+#28
+data <- data.frame(A = rnorm(100), B = rnorm(100), C = rnorm(100), D = rnorm(100))
+boxplot(data)
+```
+```{r}
+#29
+boxplot(data, col = 'red')
+```
+```{r}
+#30
+summary(airquality)
+head(airquality)
+```
+```{r}
+#31
+library(mosaic)
+```
+```{r}
+#32
+airquality$Wind
+```
+```{r}
+#33
+airquality %>% 
+  select(Wind, Ozone)
+```
+```{r}
+#34
+air <- data.frame(airquality %>%
+  select(Ozone, Wind) %>%
+    mutate(Solar.R = airquality$Solar.R))
+```
+```{r}
+#35
+z <- data.frame(x = c(1,2,3), y = c(4,NA,5))
+na.omit(z)
+```
+```{r}
+#36
+# na.omit handles missing values by deleting the respective row
+```
+```{r}
+#37
+airquality %>% 
+  filter(airquality$Wind > 10)
+```
+```{r}
+#38
+text <- c('Hallo,', 'wie geht es dir?', 'Mir geht es gut.')
+```
+```{r}
+#39
+text <- data.frame(Zeile = row_number(text), text = text)
+```
+```{r}
+#40
+library(tidytext)
+text %>%
+  unnest_tokens(text, text, token = "words")
+```
+```{r}
+#41
+library(okcupiddata)
+profiles
+```
+```{r}
+#42
+#a
+profiles %>% 
+  select(sex, essay0)
+#b
+profiles %>%
+  mutate(essay = row_number())
+#c
+profiles %>%
+  na.omit(profiles)
+#d
+profiles %>% 
+  unnest_tokens(profiles, text)
+#e
+library(tidyverse)
+?str_detect
+?t
+tidy_essay <- str_detect(as.vector(t(profiles)), regex("[a-zA-Z]"), negate = TRUE)
+```
+```{r}
+#43
+
+```
+```{r}
+#44
+
+```
+```{r}
+#45
+airquality %>%
+  select(Ozone)
+```
+```{r}
+#46
+airquality %>% 
+  filter(Solar.R == 193)
+```
+```{r}
+#47
+airquality %>%
+  select(Solar.R)
+```
+```{r}
+#48
+airquality %>%
+  filter(Solar.R == 193)
+```
+```{r}
+#49
+text_df <- data.frame(column = 1:length(text), text)
+text_df %>% 
+  unnest_tokens(word, text)
+```
+```{r}
+#50
+xyplot(x ~ y)
+```
+```{r}
+#51
+mean(c(1,2,3))
+```
+```{r}
+#52
+library(ineq)
+spendings <- c(10,64.63,88.50,31.50,3.50)
+plot(Lc(spendings))
+```
