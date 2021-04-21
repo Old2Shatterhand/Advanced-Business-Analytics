@@ -3,6 +3,7 @@ title: "R Notebook"
 output:
   html_document:
     df_print: paged
+    keep_md: true
 ---
 
 
@@ -200,20 +201,28 @@ profiles %>%
   na.omit(profiles)
 #d
 profiles %>% 
-  unnest_tokens(profiles, text)
+  unnest_tokens(profiles, essay0, token = "words")
 #e
 library(tidyverse)
 ?str_detect
 ?t
-tidy_essay <- str_detect(as.vector(t(profiles)), regex("[a-zA-Z]"), negate = TRUE)
+# str_detect(as.vector(t(profiles)), regex("a-zA-Z"), negate = TRUE)
+tidy_essay <- profiles %>%
+  select(sex, essay0) %>%
+  mutate(essay = row_number()) %>%
+  na.omit() %>%
+  unnest_tokens(word, essay0) %>%
+  filter(str_detect(word, regex("[a-zA-Z]"), negate = FALSE))
 ```
 ```{r}
 #43
-
+word_group <- tidy_essay %>%
+  group_by(sex)
 ```
 ```{r}
 #44
-
+word_group %>%
+  mosaic::count(word)
 ```
 ```{r}
 #45
@@ -237,9 +246,10 @@ airquality %>%
 ```
 ```{r}
 #49
-text_df <- data.frame(column = 1:length(text), text)
+text_1 <- c('Hallo,', 'wie geht es dir?', 'Mir geht es gut.')
+text_df <- data.frame(column = 1:length(text_1), text_1)
 text_df %>% 
-  unnest_tokens(word, text)
+  unnest_tokens(word, text_1)
 ```
 ```{r}
 #50
