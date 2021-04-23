@@ -3,7 +3,7 @@ title: "R Notebook"
 output:
   html_document:
     df_print: paged
-    keep_md: true
+  pdf_document: default
 ---
 
 
@@ -181,7 +181,7 @@ text <- data.frame(Zeile = row_number(text), text = text)
 #40
 library(tidytext)
 text %>%
-  unnest_tokens(text, text, token = "words")
+  tidytext::unnest_tokens(text, output = words, token = "words")
 ```
 ```{r}
 #41
@@ -201,7 +201,7 @@ profiles %>%
   na.omit(profiles)
 #d
 profiles %>% 
-  unnest_tokens(profiles, essay0, token = "words")
+  tidytext::unnest_tokens(profiles, essay0, token = "words")
 #e
 library(tidyverse)
 # str_detect(as.vector(t(profiles)), regex("a-zA-Z"), negate = TRUE)
@@ -209,8 +209,9 @@ tidy_essay <- profiles %>%
   select(sex, essay0) %>%
   mutate(essay = row_number()) %>%
   na.omit() %>%
-  unnest_tokens(word, essay0) %>%
-  filter(str_detect(word, regex("[a-zA-Z]"), negate = FALSE))
+  tidytext::unnest_tokens(essay0, output = words, token = "words") %>%
+  filter(str_detect(words, pattern = regex("[a-zA-Z]"), negate = FALSE))
+head(tidy_essay)
 ```
 ```{r}
 #43
