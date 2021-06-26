@@ -1,0 +1,67 @@
+---
+title: "Datenaufbereitung"
+author: "Tim Lui"
+date: "4/28/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(editrules)
+library(mosaic)
+library(VIM)
+library(mice)
+```
+
+```{r rare-data}
+rareData <- read.csv("data/Rohdaten.csv", sep = ";", dec = ".")
+
+colnames(rareData) <- c("Alter", "Größe")
+
+rareData$Alter <- as.numeric(rareData$Alter)
+rareData$Größe <- as.numeric(rareData$Größe)
+
+# NA Werte kennzeichnen
+complete.cases(rareData)
+
+#  
+```
+
+```{r inconsistency}
+people <- read.csv("data/Inkonsistenten.csv", sep = ";", dec = ".")
+
+rules <- read.delim("rules.txt", sep = "\t", header = FALSE, dec = ".")
+
+E <- editarray(editrules = rules)
+
+violatedEdits(E, people)
+```
+
+```{r single imputation}
+df <- read.csv("data/Imputationsdaten.csv", sep = ";", dec = ".", stringsAsFactors = TRUE)
+
+md.pattern(df)
+aggr(df)
+marginplot(df[, c(4,1)], cex = 1.3)
+marginmatrix(df[, c(4,2,1)])
+
+# listenweiser Fallausschluss
+df %>%
+  na.omit(df)
+
+# Mittelwertersetzung
+df %>%
+  
+
+```
+
+```{r multiple imputation}
+
+df_multiple_mutation <- mice(df, m = 5, seed = 1000, maxit = 30)
+summary(df_multiple_mutation)
+
+marginplot(airquality, cex = 1.3)
+
+```
+

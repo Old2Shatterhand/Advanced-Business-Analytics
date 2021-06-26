@@ -1,0 +1,169 @@
+---
+title: "Text Mining"
+author: "Tim Lui"
+date: "5/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(mosaic)
+library(tidytext)
+library(tidyverse)
+library(wordcloud)
+library(okcupiddata)
+library(readtext)
+library(tm)
+library(ggwordcloud)
+```
+
+## 
+
+```{r}
+
+txt <- c("Dies ist ein Text.", "Mehrere Zeilen und Satzzeichen,", "Groß- und Kleinschreibung -", "und Zahlen: 96, Yo!")
+
+df <- data.frame(Zeile = 1:length(txt), Text = txt)
+
+df %>%
+  unnest_tokens(output = word, input = Text) %>%
+  filter(str_detect(word, "[a-z]"))
+
+tidy_essay <- profiles %>%
+  select(sex, essay0) %>%
+  mutate(essay = row_number()) %>%
+  na.omit() %>%
+  unnest_tokens(output = word, input = essay0) %>%
+  filter(str_detect(string = word, pattern = "[a-z]"))
+
+word_frequency <- tidy_essay %>%
+  group_by(sex) %>%
+  dplyr::count(word, sort = TRUE)
+
+total_words <- word_frequency %>%
+  group_by(sex) %>%
+  dplyr::summarise(total = sum(n))
+
+frequency_by_sex <- left_join(word_frequency, total_words) %>%
+  group_by(sex) %>%
+  mutate(Rang = row_number(), Häufigkeit = n/total)
+
+gf_line(Häufigkeit ~ Rang, data = frequency_by_sex, color = ~sex) %>%
+  gf_refine(scale_x_log10()) %>%
+  gf_refine(scale_y_log10())
+```
+
+
+## Aufgabe 52: Zipfisches Gesetz
+
+
+```{r Aufgabe-52}
+
+rare_data <- readtext::readtext("data/article.pdf")
+
+tidy_data <- rare_data %>% 
+  as_tibble(rare_data) %>%
+  dplyr::select(text) %>%
+  dplyr::mutate(row = row_number()) %>%
+  na.omit() %>%
+  tidytext::unnest_tokens(output = word, input = text) %>%
+  dplyr::filter(stringr::str_detect(string = word, pattern = "[a-z]"))
+
+word_count <- tidy_data %>%
+  count(word, sort = TRUE)
+  
+total_words <- word_count %>%
+  dplyr::summarise(total = sum(n))
+
+freq_by_rank <- word_count %>%
+  dplyr::mutate(rank = row_number()) %>%
+  dplyr::mutate(freq = n / total_words$total)
+
+gf_line(freq ~ rank, data = freq_by_rank, color = "red") %>%
+  gf_refine(scale_x_log10()) %>%
+  gf_refine(scale_y_log10())
+```
+
+## Stoppwörter
+
+```{r}
+data(stopwords_de, package = "lsa")
+
+stopwords_de <- data_frame(word = stopwords_de)
+
+article_no_stops <- tidy_data %>%
+  anti_join(stopwords_de)
+
+article_word_count <- article_no_stops %>%
+  count(word, sort = TRUE) %>%
+  mutate(word = reorder(word, n)) %>%
+  top_n(25)
+
+gf_bar(n ~ word,stat = "identity" ,data = article_word_count) %>%
+  gf_refine(coord_flip())
+
+```
+
+
+
+```{r}
+
+
+
+```
+
+
+```{r}
+
+travel_by_sex <- tidy_essay %>% 
+  dplyr::mutate(travel = (word == 'travel')) %>%
+  group_by(sex, essay) %>%
+  summarise(travel = any(travel))
+
+tally(travel ~ sex, data = travel_by_sex)
+
+xchisq.test(travel ~ sex, data = travel_by_sex)
+
+```
+
+Sentimente Lexikon mit dem Datensatz verbinden, das Geschlecht und das Sentiment zählen, die Gesamtzahl der Wörter und die relative Häufigkeit des Sentiments ergänzen
+
+```{r}
+get_sentiments(lexicon = "nrc")
+
+sentiment_by_sex <- tidy_essay %>%
+  inner_join(get_sentiments("nrc")) %>%
+  dplyr::count(sex, sentiment) %>%
+  left_join(tidy_essay %>%
+  group_by(sex) %>%
+  dplyr::summarise(total = n())) %>%
+  dplyr::mutate(freq = n/total) %>%
+  select(sex, sentiment, freq)
+```
+
+Wähle das Geschlecht als Variable für die Häufigkeit des Sentiments
+
+```{r}
+sentiment_by_sex <- sentiment_by_sex %>%
+  spread(sex, freq)
+```
+
+
+Scatterplot mit den relativen Sentimenthäufigkeiten und lograrithmisch skalierten Achsen und der Winkelhalbirenden
+
+```{r}
+gf_point(f ~ m, data = sentiment_by_sex) %>%
+  gf_text(f ~ m, label = ~sentiment, data = sentiment_by_sex, vjust = 1.5) %>%
+  gf_refine(scale_x_log10()) %>%
+  gf_refine(scale_y_log10()) %>%
+  gf_abline(intercept = 0, slope = 1, color = "red")
+```
+
+
+
+
+
+
+
+
+

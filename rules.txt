@@ -1,0 +1,6 @@
+age %in% c(>0, <=100),
+agegroup %in% c("child", "adult", "eldery"),
+height %in% c(>4.0, <=7.0),
+yearsmarried > 0,
+if (age < 16) status == "single",
+if (age < 18) ownhome == "no"
