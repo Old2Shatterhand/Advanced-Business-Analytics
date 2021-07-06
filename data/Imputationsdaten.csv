@@ -1,0 +1,11 @@
+AGE;MARRIED;OWNHOME;INCOME;GENDER;CLASS
+22;no;no;28000;male;bad
+46;no;yes;32000;female;bad
+24;yes;yes;;male;bad
+25;no;no;27000;male;bad
+29;yes;yes;;female;bad
+45;yes;yes;30000;female;good
+63;yes;yes;58000;male;good
+36;yes;no;52000;male;good
+23;no;yes;40000;male;good
+50;yes;yes;28000;female;good

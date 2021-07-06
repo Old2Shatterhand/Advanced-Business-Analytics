@@ -1,0 +1,187 @@
+---
+title: "Probeklausur"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(editrules)
+library(mosaic)
+library(okcupiddata)
+library(tidytext)
+library(igraph)
+library(tidyverse)
+library(wordcloud)
+library(twitteR)
+library(rtweet)
+```
+
+## R Markdown
+
+# Aufgabe 1
+
+a) Verständnis, Erreichbarkeit, Aufnahmen / Fehlenede Kongtrolle über die Stichprobe 
+
+b) einfache zufaällige Stichprobe aus einer Schichtung von Beobachtungen 
+
+c) Auswahl der Schichten ist nicnt so eindeutig wie bei Auswahl der Klumpen
+
+d)
+```{r}
+set.seed(1700)
+sample(100, 3, replace = TRUE)
+```
+# Aufgabe 2
+
+a) 
+```{r}
+Leute <- read.csv("data/Inkonsistenten.csv", dec = ".", sep = ";")
+```
+Fehlende Werte, Fehlerhafte Werte, unwahrscheinliche Werte
+
+```{r}
+E <- editrules::editset(editrules = expression(age > 5, age <= 100))
+E <- editrules::editset(c("age > 5", "age < 100"))
+violatedEdits(E, Leute)
+```
+
+b) Fehlende Angabe, Falsches Datenformat, Fehlerhafte Übertragung, Vergessen
+
+c) Bei der Regression wird eine Regressiosngerade auf Basis der vorhanden Werte mit einem unabhängigen Wert und ist daher eine Vorhersage, während die Mittelwertersetzung lediglich ein Lagemaß
+
+d) Es werden viele Imputierte Werte für einen fehlenden Wert eingesetzt und anschließend analysiert und zu einem finalen Wert vereinigt.
+
+# Aufgabe 3
+
+a) 
+
+```{r}
+data("profiles")
+profiles <- as_tibble(profiles)
+profiles$essay0[1]
+
+sex_essay <- profiles %>%
+  select(sex, essay0) %>%
+  unnest_tokens(output = word, input = essay0)
+# NA
+#b) 
+# that
+```
+
+# Aufgabe 4
+
+```{r}
+sender <- c("Tim", "Max", "Max", "Doris", "Doris", "Doris", "Doris", "Chantal", "Tim")
+empfaenger <- c("Beate", "Tim", "Moritz", "Moritz", "Chantal", "Tim", "Max", "Beate", "Willi")
+kanten <- data.frame(sender = sender, empfaenger = empfaenger)
+gb <- graph.edgelist(as.matrix(kanten))
+plot(gb)
+```
+a) 7
+b) 9
+c)
+```{r}
+closeness(gb)
+```
+
+
+# Aufgabe 1
+
+a) Vorteile        Nachteile
+i Antwortrate      nicht viele Fragen möglich
+ii Addressen frei verfügbar Single/Mehrfamilienhauhalte
+iii kosteneffizient   schwer kontrollierbar 
+
+b) 
+i Klumpenstichprobe
+ii Bei einer einfachen zufälligen Stichprobe werden potentielle saisonale nicht abgebildet
+
+c) 
+
+```{r}
+240400 / 393400
+153000 / 393400
+
+# Männer
+500 * 0.6110829
+# Frauen
+500 * (1 - 0.611082)
+```
+
+# Aufgabe 2
+
+a) 
+
+b) 
+
+MCAR: Dateneingabe fehlerhaft
+MAR: Altersangabe
+NCMAR: Gehalt Einkommensstarker Personen
+
+c)
+
+i Höhe, ALter
+
+```{r}
+Daten <- read.csv("data/Imputationsdaten.csv", sep = ";", header = TRUE)
+
+lr <- lm(Daten$INCOME ~ Daten$AGE, data = Daten)
+
+predict(lr, newdata = Daten)
+```
+
+d) Bei Multiple Imputation werden für einen fehlenden Wert mehrere Werte imputiert, anschließend analysiert und dann zu einen neuen Wert zusammengefügt
+
+e) Falls ein fehlender Wert die Aussage eines anderen bedingt, diese also korrelieren, oder falls eine Reihe von anderen Werten aufgrund eines fehlenden nicht mehr interpretierbar sind
+
+# Aufgabe 3
+
+
+
+```{r}
+text <- c("This is a nice text. ",
+          "It has serveral lines, contains satellites,",
+          "Large and lower case - ",
+          "and numbers: 96, Ole!")
+
+text_df <- data_frame(Zeile = 1:length(text), Text = text)
+
+tidy_text <- text_df %>% 
+  select(Zeile, Text) %>% 
+  unnest_tokens(output = word, input = Text)
+
+# a) 96
+
+data("stop_words")
+
+text_without_stopw <- tidy_text %>% 
+  anti_join(stop_words)
+
+# b) 8
+```
+
+
+# Aufgabe 5
+
+a) 
+```{r}
+token <- create_token(app = "app", consumer_key = consumer_key, consumer_secret = consumer_secret, access_token = access_token, access_secret = access_secret)
+
+Tweets_df <- rtweet::get_timeline(c("@Daimler"), n = 50, token = token)
+
+daimler$hashtags[[1]]
+
+# b) MobilityService Daimler
+
+followers <- rtweet::get_followers("@Daimler")
+```
+
+
+
+
+
+
+
+
+
+
